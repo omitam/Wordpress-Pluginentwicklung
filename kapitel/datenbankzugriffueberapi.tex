@@ -1,0 +1,342 @@
+\section{Datenbankzugriff über Plugin-API}\label{DBzugriff}
+In diesem Kapitel geht es um die Interaktion zwischen Datenbank und Plugin. Es wird allgemein auf die entsprechende Datenbankschnittstelle sowie einigen Beispielen zur Manipulation und Ausgabe von SQL-Anweisungen eingegangen. Weiterhin wird darauf eingegangen, wie Angriffe auf die Datenbank verhindert werden können (vgl. Abschnitt \ref{verhsqlinj}).
+\subsection{Die Datenbankschnittstelle WPDB}
+Wordpress bietet eine Schnittstelle an, mit der Datenbanken angesprochen werden können. Diese heißt \emph{wpdb} - eine Abkürzung für \emph{Wordpress Database} - und basiert auf ezSQL.\footcitetint[Vgl.][Abschnitt Interfacing With the Database]{MMPQ12} \newline
+Laut Vincent\footcitetint[Vgl.][]{JVEZSQL} ist ezSQL eine OpenSource Datenbankklasse, welche auf \gls{PHP} basiert und dazu dient, zwischen einem PHP-Skript und einer Wordpress-Datenbank zu interagieren.\newline
+Grundvoraussetzung ist eine globales Objekt, über welche dann auf die Datenbank zugegriffen werden kann. Diese nennt sich \$wpdb und soll verhindern, dass Funktionen aus der WPDB-Klasse direkt aufgerufen werden können. Dies kann zu Kompatibilitätsproblemen führen und wird von Wordpress nicht unterstützt.\newline
+Bevor sich den Möglichkeiten dieses Objektes zugewendet wird, werden noch zwei wichtige Informationen über die WPDB-Schnittstelle aufgezeigt. Zum einem kann diese Schnittstelle nur mit der Wordpress-Datenbank kommunizieren, zum anderen ist es manchmal auf notwendig mit anderen Datenbanken zu interagieren. \newline
+Wenn mit einer anderen oder mehreren Datenbanken interagieren werden soll, ist das Plugin Hyperdb hilfreich. Dieses ist unter \url{http://wordpress.org/extend/plugins/hyperdb/} zu finden.\footcitetint[Vgl.][Abschnitt Notes On Use]{MMPQ12}\newline
+In diesem Tutorial wird mit der Standard-Datenbank von Wordpress gearbeitet und somit muss kein zusätzliches Plugin verwendet werden. 
+\subsubsection{Syntax und grundsätzliche Beispiele}\label{sygrbei}
+Nachdem die Theorie soweit besprochen wurde, geht es nun um den Syntaxaufbau und die ersten Beispiele. \newline
+Die allgemeine Syntax einer Abfrage an die Datenbank ist in Listing \ref{ANANDB1} dargestellt.
+\lstset{language={PHP},caption={Allgemeine Syntax},label=ANANDB1}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php
+...
+$wpdb->query('query');
+...
+<?
+\end{lstlisting}
+Wie sich erkennen lässt, ist der erste Teil einer jeden Datenbankinteraktion immer das \$wpdb-Objekt. Gefolgt wird das Objekt von einem \emph{->}. Hierbei handelt es sich um einem Operator, welcher eine Methode aufruft. Dieser ist vergleichbar mit dem Punktoperator im objektorientierten Java. Anschließend wird die Funktion \emph{query} aufgerufen. Gefolgt von einem Datenbankbefehl, der in diesem Beispiel in Klammern und Hochkommata steht. Insgesamt sendet diese Anfrage einen Integer zurück, welcher beispielsweise die Anzahl der selektierten Zeilen zurückgibt. Wenn die Funktion einen Fehler enthält, wird automatisch ein \emph{FALSE}, also eine \emph{NULL} zurückgegeben.\footcitetint[Vgl.][Abschnitt Run Any Query on the Database]{MMPQ12} \newline
+Soviel erstmal zum ersten Eindruck. In den nächsten Unterkapiteln geht es um einzelne SQL-Anweisungen und wie diese ausgeführt werden können. Anschließend wird im Kapitel \ref{beiamensuc} die Theorie mit Praxisbeispielen aus dem Plugin Mentoren-Suche abgerundet. 
+\paragraph{SELECT von Variablen}\ \newline
+Als erstes weiterführendes Beispiel, sollen bestimmte Variablen mittels einer SELECT-Anweisung aus der Datenbank ausgelesen werden.\newline
+Dafür wird die sogenannte \emph{get\_var}-Funktion verwendet. Diese kann eine einzelne Variable aus der Datenbank zurückgeben. Sie eignet sich also perfekt für unsere oben erwähnte Anforderung. Wenn kein Ergebnis vorhanden ist, wird auch hier eine NULL zurückgegeben.\newline
+Kommen wir an dieser Stelle nun zu dem Syntaxaufbau, welches in Listing \ref{SEEINVA} dargestellt ist. 
+\lstset{language={PHP},caption={Selektion einer Variablen},label=SEEINVA}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php
+...
+$wpdb->get_var('query',column_offset,row_offset);
+...
+<?
+\end{lstlisting}
+Dieser Syntaxaufbau aus Listing \ref{SEEINVA} ist wie folgt zu beschreiben:
+\begin{enumerate}
+	\item {\bf query} 
+	\begin{itemize}
+		\item Bei \emph{query} handelt es sich um einen String, welcher ausgeführt werden soll. 
+	\end{itemize}
+	\item {\bf column\_offset}
+	\begin{itemize}
+		\item Ein Integerwert, welcher die gewünschte Spalte auswählt. Hierbei stellt der Wert 0 die erste Zeile dar und ist auch gleichzeitig der Initalisierungswert.
+	\end{itemize}
+	\item {\bf row\_offset}
+	\begin{itemize}
+		\item Hierbei handelt es sich um einem String oder integer, welcher die gewünschte Zeile angibt. Auch hier ist der Initalisierungswert 0 und stellt die erste Zeile dar. 
+	\end{itemize}
+\end{enumerate}
+Die Informationen wurden aus der offiziellen Wordpress-API genommen und entsprechend aufbereitet.\footcitetint[Vgl.][SELECT a Variable]{MMPQ12} Im nächsten Abschnitt geht es um das Selektieren von Zeilen.
+\paragraph{SELECT von Zeilen}\label{SELEZEI}\ \newline
+Um eine Zeile in einer SELECT-Abfrage einzubinden, wird die Funktion \emph{get\_row} verwendet. Diese kann eine Zeile als einzelnes Objekt oder als Array wiedergeben. Wenn mehr als eine Zeile zurückgegeben wird, wird nur die erste ausgewählte Zeile ausgebenden - die anderen allerdings im Zwischenspeicher für den späteren Gebrauch gespeichert. Falls kein Ergebnis gefunden wird, wird auch hier eine \emph{NULL} zurückgegeben wird.\footcitetint[Vgl.][SELECT a Row]{MMPQ12} Um diese Theorie zu verdeutlichen, wird nun die Syntax erläutert. 
+\lstset{language={PHP},caption={Selektion einer Zeile},label=SELEINZEI}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php 
+...
+$wpdb->get_row('query', output_type, row_offset); 
+...
+?> 
+\end{lstlisting}
+Gehen wir nun auf die einzelnen Syntaxelemente ein:
+\begin{enumerate}
+	\item {\bf query}
+	\begin{itemize}
+		\item Auch hier handelt es sich wieder um einen String, der ausgeführt werden soll.
+	\end{itemize}
+	\item {\bf output\_type }
+	\begin{itemize}
+		\item Hier gibt es drei vordefinierte Konstanten, von denen jeweils eine eingesetzt werden darf. 
+		\begin{enumerate}
+			\item Objekt: Ergebnis wird als Objekt wiedergegeben
+			\item Array\_A: Ein assoziatives (also mit nichnumerischen Schlüsseln) wird zurückgegeben
+			\item Array\_N: Ein nummerisches Array wird zurückgegeben (also mit numerischen Schlüsseln)
+		\end{enumerate} 
+	\end{itemize}
+	\item {\bf row\_offset }
+	\begin{itemize}
+		\item Bezeichnet die gewünschte Zeile. Auch hier ist die Initialisierungswert \emph{NULL} und stellt zugleich die erste Zeile dar. 
+	\end{itemize}
+\end{enumerate}
+Im nächsten Abschnitt wird das selektieren von Spalten besprochen.
+\paragraph{SELECT von Spalten}\ \newline
+Um Spalten zu selektieren, gibt es die Funktion \emph{get\_col}, welche ein Array ein Array der ausgewählten Spalten zurückgibt. Bei einem nicht vorhandenem Ergebnis leeres Array zurückgegeben.\footcitetint[Vgl.][SELECT a Column]{MMPQ12} Die Syntax lautet folgendermaßen:
+\lstset{language={PHP},caption={Selektion von Spalten},label=SELVOSP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php 
+...
+$wpdb->get_col('query',column_offset); 
+...
+?> 
+\end{lstlisting}
+Es handelt sich hierbei um eine relativ kleine Syntax, welche nun im Detail besprochen wird:
+\begin{enumerate}
+	\item {\bf query}
+	\begin{itemize}
+		\item So wie bei den oben genannten Formen, handelt es sich hier auch um den auszuführenden String.
+	\end{itemize}
+	\item {\bf column\_offset}
+	\begin{itemize}
+		\item Der column\_offset bezeichnet die ausgewählte Spalte in Form eines Integers und wird mit NULL initialisiert.
+	\end{itemize}
+\end{enumerate}
+Soviel zu den Select-Befehlen. Nun wird auf zwei weitere Abfragen eingegangen; nämlich \nameref{insert} und \nameref{update}.
+\paragraph{INSERT von Spalten}\label{insert}\ \newline
+Für das Einfügen von Spalten bieten sich in der wpdb-Umgebung die Funktion \emph{insert} an. Diese besteht aus drei Parametern und wird nun anhand der Syntax erläutert\footcitetint[Vgl.][INSERT rows]{MMPQ12} :
+\lstset{language={PHP},caption={Insert von Spalten},label=INVOSP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php 
+...
+$wpdb->insert( $table, $data, $format ); 
+...
+?> 
+\end{lstlisting}
+Soviel zum allgemeinen Syntaxaufbau. Die einzelnen Elemente bedeuten dabei folgendes: 
+\begin{enumerate}
+	\item {\bf \$table}
+	\begin{itemize} 
+		\item Der Name der Tabelle, in die Daten eingefügt werden sollen. Dieser erste Parameter wird in Form des Typs \emph{String} angegeben.
+	\end{itemize}
+	\item {\bf \$data}
+	\begin{itemize}
+		\item Beschreibt die konkreten Daten, die eingefügt werden sollen. Dabei handelt es sich um ein Objekt vom Typ \emph{array}	
+	\end{itemize}
+	\item {\bf \$format}
+	\begin{itemize}
+		\item Dies ist eine optionale Angabe, die für  das Format aus \$data steht. Das bedeutet, wenn in \$data nur Strings stehen, kann hier \%s gesetzt werden und alle Inhalte werden als Strings behandelt. Hiermit lässt sich der genaue Inhalt von \$data angeben.
+	\end{itemize}
+\end{enumerate}
+\paragraph{UPDATE von Spalten}\label{update}\ \newline
+Der letzte der SQL-Anweisungen, der hier vorgestellt wird, ist der Update-Befehl\footcitetint[Vgl.][UPDATE rows]{MMPQ12}. Dieser eignet sich dafür, eine Zeile zu verändern. Dabei gibt der Befehl ein \emph{false} bei einem aufgetretenen Fehler zurück.\newline
+Die allgemeine Syntax lässt sich wie folgt beschreiben:
+\lstset{language={PHP},caption={Update von Spalten},label=UPVOSP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php 
+...
+$wpdb->update( $table, $data, $where, $format = null, $where_format = null ); 
+...
+?> 
+\end{lstlisting}
+\begin{enumerate}
+	\item \textbf{\$table}
+	\begin{itemize}
+		\item Auch hier ist mit dieser Anweisung die Tabelle gemeint, auf die sich bezogen wird.
+	\end{itemize}
+	\item \textbf{\$data}
+	\begin{itemize}
+		\item Auch hier handelt es sich um die Daten, die verändert werden sollen.
+	\end{itemize}
+	\item \textbf{\$where}
+	\begin{itemize}
+		\item Bei der where-Angabe handelt es sich um eine spezielle Anweisung, was in einer Spalte oder Zeile geändert werden soll. Hier ist es auch möglich, mehrere Angaben mit dem logischen AND zu verknüpfen.
+	\end{itemize}
+	\item \textbf{\$format}
+	\begin{itemize}
+		\item format beschreibt die Art der ausgewählten Daten - genauer gesagt um welchen Datentypen es sich handelt. Bei einem String würde ein \%s angegeben werden und alle Inhalte wie Strings behandelt. Diese Angabe ist optional.
+	\end{itemize}
+	\item \textbf{\$where\_format}
+	\begin{itemize}
+		\item Auch hierbei handelt es sich um eine optionale Angabe, welche beschreibt, welche Art von Format für den Update-Befehl ausgewählt werden soll. Auch diese Angabe ist optional und für einen String für \%s dienen und alle anderen Datentypen ignoriert werden.
+	\end{itemize}
+\end{enumerate}
+Weitere Informationen befinden sich unter der Adresse \url{http://codex.wordpress.org/Class_Reference/wpdb}. Hier sind auch einige Beispiele vorhanden. Konkrete Beispiele aus dem Mentoren-Plugin finden sich hingegen im nächsten Kapitel \ref{beiamensuc}.
+\subsubsection{Beispiele aus dem Plugin Mentoren-Suche}\label{beiamensuc}
+Nachdem in Kapitel \ref{sygrbei} einige Befehle angesprochen wurden, werden diese nun anhand von Praxisbeispielen aus dem Plugin \emph{mentoren-suche}  vorgestellt und erläutert. Dabei wird nun so vorgegangen, dass zuerst ein Beispiel genannt, welches im Anschluss erläutert wird.
+\paragraph{Beispiel SELECT von Zeilen}\ \newline
+Eine normale SELECT-Anfrage stellt die einfachste aller Anfragen dar. Dieser soll einen bestimmten Inhalt aus der Datenbank auslesen. Dabei kommt der SELECT-Befehl zum Einsatz (siehe dazu \ref{SELEZEI}).\newline
+In dem in Listing \ref{SELSPMP} dargestellten Auszug aus der Funktion \emph{ms\_showDeleteDataForm()}, welche für  das Anzeigen eines Datensatzes für das Löschen-Formulars (näheres zu Formulare in Kapitel \ref{Formular}) programmiert wurde, besteht aus 2 Teilen. \newline
+\lstset{language={PHP},caption={Beispiel SELECT von Zeilen aus mentoren-plugin},label=SELSPMP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php
+...
+function ms_showDeleteDataForm()
+{
+
+    $sql_mentorID="SELECT mentees_mid ".
+                  "FROM ".MENTEE_TABLE.   
+                  " WHERE mentees_matrikelnr ='".
+                  $delete_mentee_id."'";
+    $rs_mentorID=$wpdb->get_row($sql_mentorID);
+}
+...
+<?
+\end{lstlisting}
+Der erste Teil definiert einen Befehl zum selektieren eines bestimmten Datensatzes, der zweite in Zeile 10 dargestellte Befehlt gibt dann das Ergebnis wieder. Dieses kann dann mit der Variable  \emph{\$rs\_ mentorID} weiter verwendet werden.\newline
+Der Befehl wurde entsprechend verschachtelt, um potenzielle SQL-Injections zu vermeiden. Näheres dazu unter Abschnitt \ref{verhsqlinj}
+\paragraph{Beispiel SELECT von Spalten}\ \newline
+Im Mentoren-Plugin wurden keine Abfragen zum selektieren von Spalten verwendet. Deshalb wird an dieser Stelle auf das Beispiel aus dem offiziellen Wordpress-Codex verwiesen. Dieses ist unter
+\begin{enumerate}
+	\item \url{http://codex.wordpress.org/Class_Reference/wpdb#SELECT_a_Column}
+\end{enumerate}
+zu finden.
+\paragraph{Beispiel INSERT von Spalten}\ \newline
+Der INSERT-Befehl dient dem Einfügen von Spalten und besteht insgesamt aus 3 Parametern. Diese wurde bereits näher in Abschnitt \ref{insert} erläutert. 
+\lstset{language={PHP},caption={Beispiel INSERT von Spalten aus mentoren-plugin},label=INSPMP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php
+...
+function ms_m_data_insert() {
+
+	global $wpdb;
+
+if(!empty($_POST['ms_m_name']) && //...)
+	{		
+	  $name = $_POST['ms_m_name']; 
+	  $vorname = $_POST['ms_m_vorname']; 
+	  //...
+	
+	$rows_affected = $wpdb->insert(MENTOR_TABLE, array( 'mentoren_name' => $name, 'mentoren_vorname' => $vorname,... ) );
+	
+	} else {
+		echo " //... Error ";
+	}
+...
+<?
+\end{lstlisting}
+Der in Listing \ref{INSPMP} dargestellte Quellcode ist ein Teil der Funktion \emph{ms\_m\_data\_insert()}, welche dazu dient nach einem Submit-Button, die einzelnen Mentoren in die Mentoren-Tabelle der Datenbank zu speichern. Es handelt sich hierbei nur um ein gekürztes Beispiel, um sich auf den wesentlichen Inhalt zu konzentrieren. \newline
+Im Grunde geht es darum, dass bei der Eingabe des Namen und Vornamen des Mentors in der Eingabemaske, dieser in die Datenbank eingetragen wird. \newline
+Dafür wird in Zeile 13 die INSERT-Methode verwendet. Die betreffende Tabelle heißt MENTOR\_TABLE und die konkreten Daten werden mittels eines Arrays eingetragen. \newline
+Zur Vollständigkeit wird an dieser Stelle angemerkt, dass falls die Eingabe des Mentors nicht korrekt ist, ein entsprechender Fehler (siehe Zeile 16) ausgegeben wird.
+\paragraph{Beispiel DROP von Spalten}\ \newline
+Da keine Update-Anweisung im Plugin Mentoren-Suche verwendet wurde, wird an dieser Stelle auf die offizielle Wordpress-Dokumentation verwiesen (siehe dazu \url{http://codex.wordpress.org/Class\_Reference/wpdb\#UPDATE\_rows}) \newline
+Stattdessen wird aber kurz der Befehl zum Löschen von Tabellen vorgestellt: Der DROP-Befehl\footcitetint[Vgl.][How to Get Your WordPress Plugin To DROP TABLE From The Database]{MGDRTAPL}. \newline
+Die in Listing \ref{CDRMP} verwendete Funktion dient dazu, das Plugin komplett zu löschen. Dabei wird - neben anderen kleineren Anweisungen - auch die Tabelle gelöscht. So wird nicht nur nach dem Deaktivieren, das Plugin aus dem Front- und Backend, sondern auch aus der Datenbank gelöscht.
+\lstset{language={PHP},caption={Beispiel DROP-Anweisung aus mentoren-plugin},label=CDRMP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+function pluginUninstall() {
+	global $wpdb;
+	
+	//Tabellen loeschen:
+  $sql = "DROP TABLE ".MENTOR_TABLE;
+
+  $wpdb->query($sql);
+
+  $sql = "DROP TABLE ".MENTEE_TABLE;
+  $wpdb->query($sql);
+}
+...
+?>
+\end{lstlisting}
+Was in diesem Ausschnitt nun passiert ist folgendes: Nachdem ein bereits erzeiugtes wpdb-Objekt zugeriffen wurde, wird in der Zeile 7 die Anweisung \emph{DROP\_TABLE} ausgeführt. Die allgemeine Syntax lautet: 
+\begin{itemize}
+	\item "DROP TABLE " .TABELLENNAME;
+\end{itemize}
+Diese bewirkt, dass die Tabelle \emph{MENTEE\_TABLE} gelöscht wird. In Zeile 12 wird die Anweisung dann schlussendlich ausgeführt. Soviel zu den Beispielen für die SQL-Anweisungen im Zusammenhang mit dem \emph{\$wpdb}-Objekt von Wordpress.\newline
+Weitere Informationen werden unter den folgenden Internetadressen gefunden:
+\begin{enumerate}
+	\item \url{http://codex.wordpress.org/Class_Reference/wpdb}
+\end{enumerate}
+Im nächsten Kapitel werden noch in \ref{verhsqlinj} das Verhindern von SQL-Injections angesprochen.
+\subsection{Verhindern von SQL Injections}\label{verhsqlinj}
+In diesem Abschnitt wird erläutert, wie sich SQL-Injections in der Pluginentwicklung verhindern lassen. Dies ist das Thema dieses letzten Abschnitts des Kapitels \ref{DBzugriff}.\newline
+SQL Injections bezeichnen einen Angriff auf eine SQL-Datenbank, indem SQL-Anfragen so manipuliert werden, dass Sie vertrauliche Daten ausspähen können. Es handelt sich also hierbei um eine Sicherheitslücke, welche aber mit bestimmten Anweisungen verhindert werden können.\footcitetint[Vgl.][SQL-Injection]{WIKSI12}\newline Diese werden an dieser Stelle vorgestellt.
+Eine einfache und effektive Lösung, um solche Angriffe zu verhindern, ist es, SQL-Abfragen (zu Deutsch \emph{SQL-Abfragen}) mit der Prepare-Anweisung zu versehen. Diese Anweisung bereinigt und entgeht der eigentlichen SQL-Anweisung. \newline
+Praktisch betrachtet, soll an dieser Stelle in Beispiel im Listing \ref{CVESQLINJBSP} aufgezeigt werden.
+\lstset{language={PHP},caption={Beispiel für SQL-Injection-Verhinderung},label=CVESQLINJBSP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+
+//1. Abfrage ohne prepare()-Statement
+SELECT 'post_title'
+FROM $wpdb->posts
+WHERE 'post_author' = 1
+
+//2. Abfrage mit prepare()-Statement in Datei 1
+$sql = "SELECT 'post_title'
+		FROM $wpdb->posts
+		WHERE 'post_author' = %d";
+
+//Datei 2 mit prepare()
+<?php
+	$id = 1;
+	$safe_sql = $wpdb->prepare($sql,$id);
+	$posts = $wpdb->getresults ($safe_sql);
+?>
+
+//EOF
+?>
+\end{lstlisting}
+Dieses Beispiel gibt die Titel aller Autoren aus, welche die ID 1 haben. Die Abfrage wird dabei auf die Tabelle \emph{posts} bezogen.\newline
+Nun zur Erläuterung: 
+\begin{enumerate}
+	\item Im ersten Beispiel ohne dem prepare-Statement, wird die SQL-Anweisung sozusagen im Klartext geschrieben: Es ist möglich, die Autoren-ID mitzulesen und entsprechend zu manipulieren.
+	\item Im zweiten Beispiel wird anders verfahren. Die eigentliche SQL-Anweisung wurde mit Platzhaltern ausgestattet (siehe Zeile 11: \%d). \newline
+	Im zweiten Teil dieses Beispiels wird von einer anderen \gls{PHP}-Datei auf die Anweisung zugegriffen. Dabei wir zuerst eine Variable vom Namen \%id angelegt und mit dem Wert 1 initialisiert. \newline
+	Anschließend wird mittels des \emph{prepare}-Statements die Anweisung in Zeile 9 mittels \emph{\$sql} und \emph{\$id} aufgerufen.\newline
+	Weiterhin wird dann mittels \emph{getresults} das Ergebnis der \$safe\_sql-Anfrage in \emph{posts} gespeichert und kann weiterverarbeitet werden.
+\end{enumerate}
+Der Vorteil an dem Prepare-Statement ist also, dass nur Vorlagen an Abfragen geschrieben werden, aber mittels entsprechender Variablen dynamisch verwendet werden können und so eine SQL-Injection nicht mehr so einfach möglich ist.\footcitetgedr[Vgl.][Seite 157 - 158]{BWPWP11} \newline
+Wie dies genauer im Mentoren-Plugin aussieht, ist in Listing \ref{CVESQLINJ} dargestellt.
+\lstset{language={PHP},caption={Verhindern einer SQL-Injection aus mentoren-suche},label=CVESQLINJ}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+  
+  global $wpdb;
+  
+  $sql="SELECT ms.mentees_matrikelnr," //... 
+        FROM ".MENTEE_TABLE." /...
+        WHERE ms.mentees_name=%s AND " ."ms.mentees_matrikelnr=%s";
+        
+  $result=$wpdb->get_row( $wpdb->prepare($sql,$name,$matrikelNr));
+\end{lstlisting}
+Bei diesem Beispiel ist zu beachten, dass die \emph{prepare}-Anweisung in der \emph{get\_row}-Abfrage verschachtelt ist. Trotzdem wird auch hier das \emph{prepare}-Statement ausgeführt und kann anschließend über \emph{\$result} weiterverwendet werden.\newline
+Weitere Informationen finden sich unter: 
+\begin{enumerate}
+	\item \url{http://codex.wordpress.org/Class\_Reference/wpdb\#Protect\_Queries\_Against\_SQL\_Injection\_Attacks}
+\end{enumerate}
+ \newpage

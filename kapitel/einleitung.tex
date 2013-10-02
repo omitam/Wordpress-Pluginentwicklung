@@ -1,0 +1,30 @@
+\section{Einleitung}\label{sec_Einleitung}
+Dieses Tutorial soll anhand von Erklärungen und Beispielen eine Übersicht über die Pluginentwicklung für ein Wordpresssystem geben. \newline
+Dabei wird anhand von verschiedener Fachliteratur auf einzelne Themengebiete eingegangen und diese dann im Detail behandelt. \newline
+Die zentrale Fragestellung lautet dabei: Wie entwickel ich ein Plugin in Wordpress. Dabei wird  sich am Beispiel an dem Projekt "mentoren-suche", welches für das Programm \emph{Mentoring4Excellence} programmiert wurde, orientiert.
+\subsection{Zielsetzung}
+Ziel dieser Arbeit ist dem Leser eine Übersicht über die Techniken, die für die Pluginentwicklung benötigt werden, zu geben.\newline
+Dabei lässt sich aufgrund der beschränkten Zeit nicht auf jedes Detail genauestens eingehen. Kenntnisse in den Programmiersprachen PHP, HTML und CSS sind Voraussetzung, um die einzelnen Anweisungen zu verstehen. 
+\subsection{Motivation}
+Das Tutorial wurde im Rahmen des WI-Projektes von den beiden Studenten Timo Amling und Anatol Tissen geschrieben, welche zuvor auch das dazugehörige Plugin entwickelt und dokumentiert haben.\newline
+Daher haben die Autoren die ersten Praxiserfahrungen mit dem Umgang professioneller Pluginentwicklung kennengelernt und möchten mit diesem Tutorial ihre Erfahrungen und Wissen einem breiteren Spektrum an Informatiker, Studenten und Informatikinteressierte weitergeben.\newline
+Anbei soll an dieser Stelle auch erwähnt werden, dass das Kapitel \ref{interundlok} von Herrn Ludger Schönfeld geschrieben wurde. Wir danken ihn an dieser Stelle vorab für seine konstruktive Mitarbeit.
+\subsection{Inhalt}
+In diesem Unterkapitel wird neben einer Übersicht über die einzelnen Kapitelinhalte auch der Aufbau dieses Tutorials begründet. 
+\subsubsection{Kapitelübersicht}
+Nachdem in diesem ersten Kapitel \nameref{sec_Einleitung} unter anderem die Motivation dieses Tutorials geklärt wurde, wird im  zweiten Kapitel \nameref{Vorbereitung} eine Übersicht über Wordpress behandelt. Dabei wird sich mit dem Begriff des Plugins, sowie die benötigten Entwicklungswerkzeuge und Standards für die Programmierung eingegangen.\newline
+Anschließend wird in Kapitel \nameref{AUFBAUPLUGIN} die grundsätzliche Struktur eines jeden Plugins, was Funktionen sind und wie diese geschrieben werden, beschrieben.\newline
+Danach kommt das 4te Kapitel, \nameref{shortcodes}. Dieses Kapitel widmet sich den kleinen Codeschnipseln, welche an beliebiger Stelle im Seiteninhalt eingebaut werden können. Dabei wird sich auch der Shortcode-API angesprochen.\newline
+Im Kapitel \nameref{DBzugriff} werden alle technischen Aspekte, die benötigt werden um mit einer Datenbank über ein Plugin zu kommunizieren beschrieben.\newline
+Anschließend wird im Kapitel \nameref{PLASDA} die zwei wesentlichen Aspekte eines Plugins aus Anwendersicht besprochen: Die Installation und Deinstallation eines Plugins.\newline
+In Kapitel \ref{Formular} wird sich zunächst dem Begriff des Formulars gewidmet, anschließend wird beschrieben, wie Formulare erstellt und verwendet werden.\newline
+Nachdem die rudimentären technischen Aspekte in den vorherigen Kapiteln erläutert wurden, widmet sich das Kapitel \nameref{interundlok} der Sprachanpassung für Plugins. Nach einigen Begrifflichkeiten, wird anschließend gezeigt, wie Übersetzungen erstellt und auf den neusten Stand gehalten werden. Natürlich spielt auch das laden einer solchen Textdomain in diesem Kapitel eine Rolle.\newline
+Das letzte Kapitel \nameref{fazit} beschreibt zusammenfassend die einzelnen oben genannten Schritte der Pluginentwicklung. 
+\subsubsection{Aufbau}
+In diesem kleinen Abschnitt geht es um die grundsätzliche Frage nach dem strukturellen Aufbau dieses Tutorials. \newline
+Wie sich erkennen lässt, behandeln die ersten drei Kapitel inhaltlich die ersten Schritte in der Plugin-Entwicklung.  Dabei wird immer spezifischer von der Klärung des Begriffs \emph{Plugin} über entsprechende Werkzeuge und Normen bis zur Aktivierung und den ersten Schritten zum eigenen Plugin beschrieben. \newline
+Die Kapitel vier bis acht dienen der tieferen und komplexeren Entwicklung. Dort werden spezielle Techniken angesprochen. Angefangen mit dem verwenden von Shortcodes um das Plugin auf eine Wordpress-Seite einzubinden, wird anschließend Aspekte der Datenbankkommunkation besprochen. Auch Sicherheitsaspekte was beispielsweise bestimmte Angriffstechniken auf die Datenbank angehen, werden hier beachtet. \newline
+Weiter geht es dann mit Formularen in Kapitel sieben. Neben einigen grundsätzlichen Methoden und Begriffen, wird anschließend gezeigt, wie Formulare in Wordpress erstellt werden. Dies wird dann zum Abschluss des Kapitels mit Beispielen aus der Mentoren-Suche abgerundet.\newline
+Im achten Kapitel - der Internationalisierung und Lokalisation - geht es um die Sprachanpassung eines Wordpress-Plugins. Dabei werden nach einer kurzen Einführung in das Thema einige Techniken gezeigt, sich Übersetzungen erstellen lassen und diese im einzelnen konfiguriert werden. wie.\newline
+Im neunten Kapitel werden dann die Installation und Deinstallation aus Anwendersicht beschrieben, um das Tutorial abzuschließen und aus der Entwicklersicht wieder auf die Anwendersicht zu kommen. \newline
+Zum Schluss werden dann im Kapitel neun die wichtigsten Fakten aufgelistet und dient so als Rückblick auf den Inhalt. Weiterhin wird auch hier ein Ausblick gegeben. Dies rundet dann das Tutorium sinnvoll ab.

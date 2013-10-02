@@ -1,0 +1,302 @@
+\section{Pluginverwendung in Wordpress}\label{PLASDA}
+Nachdem die Programmierung des Plugins soweit abgeschlossen ist und die fundamentalen Kenntnisse erklärt und entsprechende Funktionen erläutert wurden, widmet sich dieses Kapitel mit der Installation und Deinstallation des Plugins. \newline
+Dabei sollte beachtet werden, dass auch hier aus Programmier- und nicht primär aus Anwendersicht erläutert und erklärt wird.
+Zuvor soll allerdings eine kleine Begriffsbestimmung für dieses Kapitel geschehen.
+\subsection{Unterscheidung der Installationstypen}
+Wie schon bereits angedeutet, soll an dieser Stelle zuerst einmal die unterschiedlichen Typen von Installation und Deinstallation eines Wordpress-Plugins angesprochen werden. Allgemein wird dabei in drei verschiedenen Zuständen unterschieden. Diese werden nun dargestellt, um anschließend mit den einzelnen Installations- und Deinstallationsroutinen fortzufahren.\newline
+Laut Williams/Richard/Tadlock\footcitetgedr[Vgl.][Seite 20 - 22]{BWPWP11} sind die drei Zustände folgendermaßen beschrieben:
+\begin{enumerate}
+	\item \textbf{Aktivierungfunktionen}
+	\begin{itemize}
+		\item Diese Art von Funktionen werden dann aufgerufen, wenn ein Benutzer mit entsprechenden Administrationsrechten dieses Plugin aktiviert. 
+\end{itemize}		
+	\item \textbf{Deaktivierungsfunktionen}
+	\begin{itemize}
+		\item Auch diese Funktion verhält sich ähnlich wie die Aktivierungsfunktionen, mit dem kleinen Unterschied, dass diese erst dann ausgeführt werden, wenn der Administrator das zuvor aktivierte Plugin deaktiviert.
+	\end{itemize}
+	\item \textbf{Deinstallationsfunktionen}
+	\begin{itemize}
+		\item Nachdem ein Plugin deaktiviert wurde, kann es auch deinstalliert werden. Dabei werden alle Einstellungen sowie das Plugin selbst gelöscht. Eine solche Funktion sollte in jedem Plugin vorhanden sein, um dem User einen angenehmen Weg zur Deinstallation zu bieten und das Plugin professionell abzurunden.
+	\end{itemize}
+\end{enumerate}
+Soweit an dieser Stelle zu den einzelnen Funktionsunterscheidungen. Das nächste Kapitel beschäftigt sich mit den einzelnen Routinen.
+\subsection{Installation}
+Ein jedes abgeschlossene Plugin sollte bei entsprechender Funktionalität und Entwicklungsstadium irgendwann installiert werden. Genau dies wird in diesem Unterkapitel angesprochenen.\newline
+Allgemein lässt sich formulieren, dass ein Plugin über die Administratoroberfläche unter dem Pfad \emph{Plugins/Installieren} installiert werden kann.\newline
+Was dabei im Hintergrund passiert, das heißt genauer: Was aus Entwicklerperspektive passiert, ist im Unterkapitel \ref{insrout} weiter beschrieben. 
+\subsubsection{Intallationsroutinen}\label{insrout}
+Sogenannte Installationsroutinen werden bei der Aktivierung (vgl. Abschnitt \ref{aktvfunk}), Deaktivierung (vgl. Abschnitt \ref{Deaktivieren}) und Löschen (vgl. Abschnitt \ref{Deinstallieren}) des Plugins angestoßen - also automatisch ausgeführt.\newline
+Der Vorteil bei solchen Installationsroutinen liegt darin, bestimmte Standardeinstellungen des Plugins zu setzen. Die hier angesprochenen Funktionen sind Fundamental und lassen sich für alle Plugins einsetzen.\footcitetgedr[Vgl.][Seite 18]{BWPWP11}\newline
+Um die genaueren Eigenschaften einer solchen Aktivierungsfunktion kennen zu lernen, wird diese nun in Abschnitt \ref{aktvfunk} besprochen.
+\paragraph{Aktivieren}\label{aktvfunk}\ \newline
+Bei der Aktivierung werden einzelne Definitionen, Action, Options und Funktionen ausgeführt. Beispielweise können somit die initialen Tabellen oder bestimmte Funktionen ausgeführt werden. An dieser Stelle sollen solche in dem Plugin verwendeten Objekte vorgestellt werden.
+\subparagraph{Plugin-Activation-Funktion}\ \newline
+Diese Funktion dient dazu, direkt bei der Aktivierung des Benutzers ausgeführt zu werden. Hiermit lassen sich einige Standardeinstellungen festlegen. Natürlich lassen sich beispielsweise auch Versionsprüfungen oder verschiedenen Datenbanktabellen anlegen.\newline
+Dies soll an folgenden Listing \ref{BSPACTHOO} weiter erklärt werden:
+\lstset{language={PHP},caption={Beispiel für einen Activation-Hook},label=BSPACTHOO}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php 
+...
+register_activation_hook( $file, $function ); 
+...
+?> 
+\end{lstlisting}
+Wie dargestellt, sieht syntaktisch so eine Funktion aus, welche bei aktivieren des Plugins ausgeführt wird. Dabei sind die folgenden Parameter zu beachten\footcitetgedr[Vgl.][Seite 18]{BWPWP11}:
+\begin{enumerate}
+	\item \textbf{\$file}
+	\begin{itemize}
+		\item Hierbei handelt es sich um einen String-Parameter, welcher für den Pfad zu der Hauptdatei des Plugins bestimmt ist. Dies könnte also beispielsweise die Datei \emph{mentoren\_suche.php} sein.
+	\end{itemize}
+	\item \textbf{\$function}
+	\begin{itemize}
+		\item Diese hier angegebene Funktion wird dann aufgerufen, wenn die Aktivierung des Plugins stattfindet.
+	\end{itemize}
+\end{enumerate}
+Ein Beispiel kann diese Definition veranschaulichen (siehe Listing \ref{BSPACTHOO})
+\lstset{language={PHP},caption={Beispiel für einen Activation-Hook},label=BSPACTHOO}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php 
+...
+register_activation_hook( __FILE__, 'boj_myplugin_install' );
+function INSTALL() { //do cool activation stuff
+}
+...
+?> 
+\end{lstlisting}
+Wenn also die Aktivierung des Plugins erfolgt, wird die Funktion INSTALL() aufgerufen. Allerdings soll es hier ein Anliegen sein, die PHP-Konstante \emph{\_\_FILE\_\_} zu erläutern.\newline
+Wie bereits in der Definition erwähnt, soll der erste Parameter den Pfad zur Hauptdatei des Plugins darstellen. Mittels die FILE-Konstante von PHP, wird automatisch der absolute Pfad des Plugins zu der Datei ermittelt, welche die Funktion aufruft.\footcitetgedr[Vgl.][Seite 18]{BWPWP11}\newline
+Nachdem die grundlegende Aktivierungsfunktion besprochen wurde, sollen nun auch ein paar Actions besprochen werden, welche für die Aktivierung des Plugins interessant sind.
+\subparagraph{Das Event init}\ \newline
+Das erste Event, welches hier besprochen wird, ist das init-Event von Wordpress.\newline
+Wie in Listing \label{MIVERSWP} dargestellt, wird mittels des Hooks \emph{Action} (siehe Kapitel \ref{sub_acvsfs}) und dem Event \emph{Init} die Funktion \emph{MS\_MIN\_WORDPRESS\_VERSION} aufgerufen.
+\lstset{language={PHP},caption={Prüfung der Mindestversion in Wordpress},label=MIVERSWP}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg,\$wpdb}
+}
+\begin{lstlisting}
+<?php 
+...
+define('MS_MIN_WORDPRESS_VERSION', '3.0');
+add_action('init', 'MS_MIN_WORDPRESS_VERSION');
+...
+?> 
+\end{lstlisting}
+Dabei dient das Event \emph{init} dazu, bestimmte Funktionen auszuführen. Dies passiert in aller Regel, nachdem Wordpress seine eigenen internen Funktionalitäten, wie das Digitalisieren von Widgets fertig gestellt hat. Diese können erst dann sicher erfolgen, wenn Wordpress von seiner Seite aus alle Einstellungen geladen und initialisiert hat.\footcitetgedr[Vgl.][Seite 37]{BWPWP11} \newline
+So wird in dem oben genannten Beispiel die Funktion entsprechende Funktion aufgerufen. Dabei wird in der Zeile 3 definiert, dass der Parameter 3.0 mitgegeben werden soll. Hierbei handelt es sich um die Mindestversion, damit das Plugin überhaupt installiert werden darf, um auf bestimmte Funktionalitäten ab der Version 3.0 zuzugreifen. Dies ist Gegenstand des nächsten Abschnittes.
+\subparagraph{Prüfung der Mindestversion}\ \newline
+Wie eine Kontrollfunktion zur Mindest-Wordpress-Version aussieht, wird in Listing \ref{CPRDWPV} dargestellt.
+\lstset{language={PHP},caption={Prüfen der Wordpressversion},label=CPRDWPV}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+/**
+* Prueft aktuelle Wordpress Version, ob Plugin installiert 
+* werden darf oder nicht.
+*/
+
+function MS_MIN_WORDPRESS_VERSION() {
+   global $wp_version;
+   
+   $exit_msg='"Mentoren Suche" benoetigt WordPress '.MS_MIN_WORDPRESS_VERSION.' or newer. 
+      <a href="http://codex.wordpress.org/Upgrading_WordPress">Wordpress Download</a>';
+     
+   if (version_compare($wp_version,MS_MIN_WORDPRESS_VERSION,'<'))
+   {
+       exit ($exit_msg);
+   }
+  do_action('hk_mentees_db_create');
+  do_action('hk_mentor_db_create');
+}
+...
+?>
+%\end{lstlisting}
+Dabei wird zuerst in Zeile 9 eine entsprechendes Variable verwendet \emph{wp\_version}, welches die Versionsnummer der Wordpress-Installation beinhaltet. Anschließend wird eine Fehlermeldung (Ziele 11 - 15) definiert, um schlussendlich zu überprüfen, ob die eingesetzte Wordpressversion über der Mindestversion (3.0) liegt. Dafür wird due Funktion \emph{version\_compare} verwendet. Es handelt sich dabei laut des offiziellen Handbuchs von PHP.net (\url{http://php.net/manual/en/function.version-compare.php}, um eine Funktion, welche 2 Nummern vergleichen kann. Dabei können beispielsweise die Operatoren >, <, >=, <= oder != verwendet werden. \newline
+Falls dies nicht der Fall sein sollte, wird das Plugin nicht aktiviert und die definierte Fehlermeldung ausgegeben.\newline
+Bei erfolgreicher Überprüfung, werden hingegen die Initialisierungstabellen in die Datenbank geschrieben (siehe Zeile 21 - 22).
+\subparagraph{Das Event \emph{admin\_menu}}\ \newline
+Eine weitere Funktion, welche beim Aktivieren des Plugins aufgerufen wird, ist das sogenannte Event \emph{admin\_menu}, welches beispielhaft in Listing \ref{CMENIADBE} dargestellt ist.
+\lstset{language={PHP},caption={Menüerstellung im Adminbereich},label=CMENIADBE}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+//Die Registrierung des Menues (Backend)
+add_action('admin_menu', 'register_Mentees_menu');
+...
+?>
+%\end{lstlisting}
+Das Event \emph{admin\_menu} wird dazu benötigt, um im Administratorbereich von Wordpress Code auszuführen.\footcitetgedr[Vgl.][Seite 38]{BWPWP11}
+Hierbei wird die Funktion \emph{register\_Mentees\_menu} aufgerufen, um ein Administratormenü für das Plugin zu erstellen. \newline
+Auch diese Action wird beim Aktivieren von Wordpress durch den Benutzer ausgeführt. 
+\subparagraph{Das Event \emph{dbDelta(\$sql)}}\ \newline
+Als vorerst letztes zu beschreibendes Event bevor mit der Deinstallationsroutinen angefangen wird, soll noch das Event \emph{dbDelta(\$sql)}.\newline
+Dieses ist dafür da, zu prüfen, ob eine Tabelle überhaupt vorhanden ist, bevor diese aktualisiert oder erstellt wird. Dabei wird geprüft, ob die gleiche Syntax bei der zu aktualisierenden Tabelle vorliegt und ändert oder fügt die erforderlichen Tabelle hinzu.\footcitetgedr[Vgl.][Seite 193]{BWPWP11}.\newline
+Wie dies inunserem Plugin aussehen könnte, ist in Listing \ref{CDBDELTA} beispielhaft dargestellt.
+\lstset{language={PHP},caption={Beispiel dbDelta},label={CDBDELTA}}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+function mentees_db_create() {
+   global $wpdb;
+   global $mentees_db_version;
+
+	//SQL-Anweisung      
+   $sql = "CREATE TABLE ".MENTEE_TABLE." (
+	...
+    );";
+    
+   dbDelta($sql);
+...
+?>
+\end{lstlisting}
+In diesem Code-Beispiel wird eine SQL-Anweisung als Zeichenkette in einer Variablen gespeichert werden. Anschließend wird mit dem entsprechenden Event geprüft, ob die Tabelle bereits vorhanden ist oder modifiziert werden muss. Abschließend wird dann der Befehl ausgeführt.\newline
+Soviel erst einmal zu den Installationevents. Im nächsten Kapitel geht es nun um die Deinstallation.
+\subsection{Deinstallation}\label{Deaktivieren}
+In diesem Kapitel werden nun Funktionen erläutert, welche bei der Deaktivierung eines Plugins eine wichtige Rolle spielen.\newline
+Um ein Plugin zu deinstallieren, muss im Administratormenü auf den Oberpunkt \emph{Plugins} geklickt werden, um so eine Übersicht über die aktiven und inaktiven Plugins zu bekommen.\newline
+An dieser Stelle soll aber von der Anwendersicht auf die Entwicklersicht gewechselt werden. \newline
+Dabei soll an dieser Stelle ein besonderer Blick auf den \emph{deactivation\_hook} gesetzt werden.\newline
+Laut Williams/Richard/Tadlock\footcitetgedr[Vgl.][Seite 20]{BWPWP11} wird die Funktion \emph{register\_deactivation\_hook} eingesetzt, um die Deaktivierung des Plugins ausgeführt zu werden. Dabei hat diese zwei Parameter, welche in Listing \ref{C:DEAKHO} dargestellt sind.
+\lstset{language={PHP},caption={Beispiel Syntax Deaktivation-Hook},label={C:DEAKHO}}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+<?php register_deactivation_hook( $file, $function ); 
+...
+?>
+\end{lstlisting}
+Anhand diesen kleinen Beispiels lassen sich die beiden Parameter erkennen. Diese sind folgendermaßen zu erklären:
+\begin{enumerate}
+	\item \textbf{\$file}
+	\begin{itemize}
+		\item Hierbei handelt es sich um den gleichen String-Parameter wie bei der Aktivierungsfunktion: Dieser ist für den Pfad zu der Hauptdatei des Plugins bestimmt. Dies könnte also auch beispielsweise die Datei \emph{mentoren\_suche.php} sein.
+	\end{itemize}
+	\item \textbf{\$function}
+	\begin{itemize}
+		\item Diese hier angegebene Funktion wird dann aufgerufen, wenn die Deaktivierung des Plugins stattfindet.
+	\end{itemize}
+\end{enumerate}
+Soviel erst einmal  zu der Theorie. In dem Mentorenplugin ist folgendes Beispiel vorgekommen und soll an dieser Stelle erwähnt und erläutert werden:
+\lstset{language={PHP},caption={Deaktivation-Hook aus Mentorensuche},label={C:BSPAMENTSUDEAK}}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+	register_deactivation_hook( __FILE__, 'pluginUninstall')
+...
+?>
+\end{lstlisting}
+Wie bereits erwähnt, wird in Listing \ref{C:BSPAMENTSUDEAK} die Funktion \emph{pluginUnistall} aufgerufen, wenn das Plugin deaktiviert ist. Genau diese Funktion soll im folgenden Listing angeschaut werden:
+werden:
+\lstset{language={PHP},caption={Funktion Plugin Unistall},label={C:BSPPLUGUNISTALL}}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+function pluginUninstall() {
+	global $wpdb;
+	
+  //Angelegte Optionen loeschen:
+	delete_option('mentees_db_version');
+    ...
+	
+	//Tabellen loeschen:
+    $sql = "DROP TABLE ".MENTOR_TABLE;
+	$wpdb->query($sql);
+
+	$sql = "DROP TABLE ".MENTEE_TABLE;
+	$wpdb->query($sql);
+}
+...
+?>
+\end{lstlisting}
+In dem Listing \ref{C:BSPPLUGUNISTALL} wird veranschaulicht, wie eine Unistall-Funktion für ein Plugin aussehen könnte. Nachdem auf ein globales Objekt zur Interaktion mit der Wordpress-API zugegriffen wurde, werden nacheinander die einzelnen Options gelöscht. Anschließend werden dann beide Tabellen gelöscht. Dies ist eine Besonderheit bei dem Mentoren-Plugin: Normalerweise wird bei der Deaktivierung nur das Plugin inaktiv geschaltet, allerdings werden keine Tabellen gelöscht. \newline
+Allein aus Datenschutzrechtlichen Gründen haben wir uns entschieden, statt der Deinstallationsroutine, direkt das Löschen der Datenbank in die Deaktivierungsroutine einzubauen. Dies kann allerdings optional natürlich auch im zweiten Schritt (siehe Kapitel \ref{Deinstallieren}) passieren.
+\subsubsection{Deinstallieren}\label{Deinstallieren}
+Das Deinstallieren eines Plugins löscht alle vorhandenen Daten des Plugins. Dabei beherrscht Wordpress zwei verschiedene Arten. Diese werden nun vorgestellt und mit Beispielen erläutert. 
+\paragraph{Uninstall.php - Methode}\ \newline
+Die erste Methode, um ein Plugin zu löschen ist mittels der \emph{Uninstall.php}. Der Vorteil einer solchen Datei besteht darin, dass alle Deinstallationsfunktionen in einer separaten Datei liegen und so keine Probleme mit anderen Funktionen entstehen. Dabei ist es wichtig, dass diese Datei im untersten Verzeichnis des Plugins angelegt wird. An dieser Stelle soll ein kleines Beispiel erfolgen:\footcitetgedr[Vgl.][Seite 21]{BWPWP11}
+\lstset{language={PHP},caption={Beispiel Unistall.php-Datei},label={C:BSPPLUGUNISTALLDAT}}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+
+	// If uninstall not called from WordPress exit 
+	if( !defined( 'WP_UNINSTALL_PLUGIN' ) )
+	exit ();
+	// Delete option from options table 
+	delete_option( 'boj_myplugin_options' );
+	//remove any additional options and custom tables 
+...
+?>
+\end{lstlisting}
+Wie in Listing \ref{C:BSPPLUGUNISTALLDAT} dargestellt, könnte eine Uninstall.php-Datei aussehen. \newline
+Dabei ist die erste If-Abfrage dazu gedacht, zu überprüfen, dass WordPress und nicht irgend eine andere Funktion dieses Skript aufruft. Wenn dies der Fall sein sollte, wird direkt ausgestiegen.\newline
+Falls allerdings es sich tatsächlich im Wordpress handelt, kann beispielsweise mit einer Delete oder Drop-Anweisung Optionen und Tabellen gelöscht werden.\newline
+Ein großer Vorteil dieser Funktion besteht darin, dass die Dateien und Verzeichnisse des Plugins automatisch bei Aufruf des Skriptes von Wordpress mitgelöscht werden. 
+\paragraph{Uninstall - Hook}\ \newline
+Nachdem die Version mittels einer Uninstall.php-Datei erläutert wurde, soll zur Abrundung auch der Uninstall-Hook von Wordpress besprochen werden.\newline
+Laut Williams/Richard/Tadlock\footcitetgedr[Vgl.][Seite 21 - 22]{BWPWP11} hat Wordpress eine Reihenfolge, wie verfahren wird, wenn ein Administrator ein Plugin deinstalliert. Im ersten Schritt wird geschaut, ob eine Uninstall.php-Datei vorhanden ist. Ist dies nicht der Fall, wird der Uninstall-Hook aufgerufen (natürlich nur in soweit er auch im Plugin vorhanden ist). Die Syntax dieses Hooks unterscheidet sind prinzipiell nicht sehr vom Aktivation-Hook:
+\lstset{language={PHP},caption={Syntax Uninstall-Hook},label={C:BSPUNIHOOK}}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+	register_uninstall_hook( $file, $function );
+...
+?>
+\end{lstlisting}
+Wie in Listing \ref{C:BSPUNIHOOK} dargestellt, besteht dieser Hook auch aus 2 Parametern. Dabei ist der erste Parameter der Pfad zur Haupt-Plugindatei, während der zweite Parameter die einzuleitende Funktion beinhaltet. Beispielsweise lässt sich das folgende Listing \ref{C:BSPFUNCUNIHOO} anführen:
+\lstset{language={PHP},caption={Beispiel Uninstall-Hook},label={C:BSPFUNCUNIHOO}}
+\lstset{
+ morekeywords={function,do_action,global,\$exit_msg}
+}
+\begin{lstlisting}
+<?php
+...
+	register_activation_hook( __FILE__, 'boj_myplugin_activate' );
+
+	function boj_myplugin_activate() {
+		//register the uninstall function
+		register_uninstall_hook( __FILE__, 'boj_myplugin_uninstaller' );
+	}
+
+	function boj_myplugin_uninstaller() {
+		//delete any options, tables, etc the plugin created 
+		delete_option( 'boj_myplugin_options' );
+}
+...
+?>
+\end{lstlisting}
+In Listing \ref{C:BSPFUNCUNIHOO} wird bei der Aktivierung des Plugins automatisch die Aktivierungsfunktion \emph{boj \_myplugin \_activate} aufgerufen. Diese wiederum ruft den Uninstall-Hook auf, welche dann die Funktion \emph{boj\_myplugin\_uninstaller()} aufruft und Funktionen zum löschen des Plugins bereitstellt. Mit diesem Beispiel soll aufgezeigt werden, dass bei den Hooks schnell Fehler während der Programmierung entstehen können. In diesem Fall würde das Plugin nicht installierbar sein, weil es sich direkt wieder deinstalliert. Rein logisch betrachtet, weiß der Entwickler nun, auf was er achten sollte. Allerdings gibt es einen einfacheren Weg:\newline
+Insgesamt empfehlen Williams/Richard/Tadlock\footcitetgedr[Vgl.][Seite 22]{BWPWP11}, die Uninstall.php-Methode zu verwenden. Diese Methode ist einfacher zu programmieren, vermeidet grobe Fehler bei der Benutzung des Hooks und ist vom Programmierstandard eine saubere Variante, da die einzelnen Funktionalitäten modular programmiert sind.\newline
+Weitere Informationen zu diesem Thema finden sich unter:\begin{enumerate}
+\item \url{http://codex.wordpress.org/Function\_Reference/register\_deactivation\_hook}
+\item \url{http://codex.wordpress.org/Function\_Reference/register\_activation\_hook}
+\end{enumerate}

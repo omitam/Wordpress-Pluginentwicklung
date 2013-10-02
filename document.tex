@@ -1,0 +1,134 @@
+ %================================================================================
+% Erstellt am: 28.07.12
+% Autor:	 Timo Amling
+% Dieses Dokument beeinhaltet die gesamte Dokumentation ueber Wordpress-Pluginent-
+% wicklung im Rahmen des WI-Projektes von Anatol Tissen und Timo Amling.
+% Es dient primär dem Selbststudium und ist unter der GPLv3 veröffentlicht worden.
+%=================================================================================
+
+\documentclass[a4paper]{scrartcl}
+
+%Einbinden des Headers
+\include{kapitel/header} 
+
+%Abkuerungsverzeichnis
+\usepackage[
+acronym,      %ein Abkürzungsverzeichnis erstellen
+nonumberlist] %keine Seitenzahlen anzeigen
+{glossaries}
+%Den Punkt am Ende jeder Beschreibung deaktivieren
+\renewcommand*{\glspostdescription}{}
+
+
+\makeglossaries
+
+\newglossaryentry{GPL}{name={GPL},
+description={General Public Licence}}
+\newglossaryentry{CMS}{name={CMS},
+description={Content Management System}}
+\newglossaryentry{API}{name={API},
+description={Application Programming Interface}}
+\newglossaryentry{PHP}{name={PHP},
+description={PHP: Hypertext Preprocessor}}
+\newglossaryentry{HTML}{name={HTML},
+description={HyperText Markup Language}}
+\newglossaryentry{SQL}{name={SQL},
+description={Structured Query Language}}
+\newglossaryentry{XAMPP}{name={XAMPP},description={Cross-plattform, Apache, MySQL, PHP, Perl}}
+\newglossaryentry{URL}{name={URL},description={Uniform Resource Locator}}
+\newglossaryentry{CSS}{name={CSS},description={Cascading Style Sheets}}
+\newglossaryentry{FTP}{name={FTP},description={File Transfer Protocol}}
+\newglossaryentry{POT}{name={POT},
+description={Portable Object Template}}
+\newglossaryentry{ID}{name={ID},
+description={Identifier}}
+\newglossaryentry{URI}{name={URI},
+description={Uniform Ressource Identifier}}
+%##### ANFANG DOKUMENT #### 
+\begin{document}
+
+%Einbinden der Titels
+\input{kapitel/titelseite}
+
+%Einbinden des Inhaltsverzeichnis
+\input{kapitel/inhaltsverzeichnis}
+
+%Einbinden von Abbildungs-, Abkürzungsverzeichnis
+\input{kapitel/verzeichnisse}
+\thispagestyle{empty}
+%Zähler für Kapitel auf 1 setzen
+\setcounter{page}{0}
+
+\newpage
+
+%%%********************************************************************************
+\input{kapitel/einleitung}
+\newpage
+%
+%%%********************************************************************************
+\input{kapitel/vorbereitung}
+\newpage
+%% 	
+%%%%********************************************************************************
+\input{kapitel/aufbaudesplugins}
+\newpage
+%%
+%%%%********************************************************************************
+\input{kapitel/menuerstellung}
+\newpage
+%%
+%%%%********************************************************************************
+\input{kapitel/shortcodes}
+\newpage
+%%
+%%%%********************************************************************************
+\input{kapitel/datenbankzugriffueberapi}
+\newpage
+%%
+%%%%********************************************************************************
+\input{kapitel/formular}
+\newpage
+%%
+%%%%********************************************************************************
+\input{kapitel/interundlok}
+\newpage
+%%
+%%%%********************************************************************************
+ \input{kapitel/pluginanwendersicht}
+\newpage
+%%%%********************************************************************************
+\input{kapitel/fazit}
+\newpage
+%%
+%%%%******************************************************************************** 
+%%%\include{kapitel/testsachen}
+%%\newpage
+%\printindex 
+%%********************************************************************************
+\section*{Quellenverzeichnis}
+Das Literaturverzeichnis ist in zwei Abschnitte, nämlich den Buch- und Internetquellen. Dies soll so der besseren Überschaubarkeit des Lesers dienen.
+\thispagestyle{empty}
+%% The normal bibliography
+\bibliographygedr{bib/wptutbiblit}
+\bibliographystylegedr{jurabib}
+\thispagestyle{empty}
+%% The _sec_ond bibliography
+\bibliographyint{bib/wptutbibint}
+\bibliographystyleint{jurabib}
+\thispagestyle{empty}
+
+%%********************************************************************************
+%\include{kapitel/anhang}
+%\newpage
+
+%%********************************************************************************
+%1. "/usr/texbin/makeindex" %.idx -o %.ind
+%2. pdflatex document
+%Beispieltext
+%\renewcommand*{\thispagestyle}{empty}
+%\printindex 
+
+%%********************************************************************************
+\end{document}
+
+

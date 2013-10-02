@@ -1,0 +1,28 @@
+%Abbildungsverzeichnis erzeugen
+\thispagestyle{empty}
+\listoffigures
+
+%Zwischen den Verzeichnissen eine neue Seite einbinden
+\newpage
+
+%Tabellenverzeichnis erzeugen
+\thispagestyle{empty}
+\listoftables
+
+%Zwischen den Verzeichnissen eine neue Seite einbinden
+\newpage
+
+%%Glossar (Abkuerzungsverzeichnis einbinden)
+\thispagestyle{empty}
+\printglossary[title=Abkürzungsverzeichnis]
+%Zwischen den Verzeichnissen eine neue Seite einbinden
+\newpage
+
+%Quellcodeverzeichnis erzeugen
+\thispagestyle{empty}
+\renewcommand\lstlistlistingname{Quellcodeverzeichnis} 
+\lstlistoflistings 
+
+
+
+

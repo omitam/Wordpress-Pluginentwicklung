@@ -1,0 +1,59 @@
+\section{Vorbereitung}\label{Vorbereitung}
+In diesem Kapitel werden grundlegende Begriffe für den Umgang mit einem \gls{CMS} wie Wordpress erklärt und erläutert. Darauf aufbauend wird in die Definition eines Plugins gegangen. Zum Abschluss werden anschließend die wichtigsten Werkzeuge zur Pluginentwicklung vorgestellt.
+\subsection{Was ist Wordpress?}
+Laut Bondari und Griffiths\footcitetgedr[Vgl.][Seite 7]{BB11} lässt sich Wordpress als \gls{CMS} beschreiben, welches hauptsächlich für Blogs genutzt wird. Dieses Projekt besteht seit 2003 und hat sich seitdem als eines der weit verbreiteten Blogging-Software entwickelt. \newline
+Als \gls{CMS} lässt sich ein System beschreiben, mit welchem sich Daten auf einer Website dynamisch verwalten lassen. Drei wichtige Punkte sind hierbei zu beachten, um von einem vollwertigen \gls{CMS} zu sprechen. Dies ist zum einem die Tatsache, dass Benutzer nicht tief in die Programmierung eingreifen müssen, um die Website im Aufbau zu verändern.\footcitet[Vgl.][Seite 24]{AH12}\newline
+Im Wikipedia-Eintrag für Wordpress\footcitetint[Vgl.][]{WIKWP12} finden sich die anderen beiden Punkte. Diese lauten zum einem, dass Benutzerrollen und deren Rechte verwaltet werden können. Es gibt also eine Möglichkeit, verschiedenen Benutzer, unterschiedliche Rechte zuzuteilen. Gleichzeitig ist es aber auch möglich, dass mehrere Benutzer gleichzeitig Inhalte bearbeiten und anpassen können.\newline
+Der letzte Punkt handelt von der Erweiterbarkeit eines \gls{CMS}, nämlich die Möglichkeit, externe Plugins in das System einzubinden. All die aufgezählten Punkte werden von Wordpress erfüllt, sodass sich von einem  vollwertigen CMS sprechen lässt. \newline
+Die Software ist laut wordpress.org\footcitetint[Vgl.][]{GNU312} unter der \gls{GPL} lizensiert. Dies bedeutet, dass Wordpress frei von jedem verwendet werden darf, sei es im privaten oder kommerziellen Bereich. Dabei wird die Software und der Quellcode kostenfrei zur Verfügung gestellt und kann von jedem verwendet und weiterentwickelt werden.\newline
+Von Hause aus bietet Wordpress nur eine begrenzte Funktionalitäten, welche jedoch mit Plugins erweiterbar sind. Diese werden oft von engagierten Programmierern aus der Wordpressgemeinschaft programmiert, um wünschenswerte Funktionalitäten einzubauen und so die Software zu erweitern.\footcitetgedr[Vgl.][Seite 22]{AH12}
+\subsection{Was ist ein Plugin?}\label{WIEP}
+Plugins sind Erweiterungen für Wordpress. Sie dienen dazu, das System mit bestimmten Funktionalitäten zu erweitern und liegen im Plugin-Verzeichnis \emph{/wp-content/plugins/}. Wordpress unterscheidet  nicht wie andere CMS in bestimmte Module oder Addons. Für Wordpress ist jeder Quellcode, der das System erweitert ein Plugin.\newline
+Um diese Plugins zu programmieren, bietet Wordpress eine eigene Schnittstelle für Programmierer an: das sogenannte \gls{API}.
+Hiermit können Programmierer mit dem System über bestimmte Funktionen und Variablen kommunizieren. Der größte Teil der Funktionen ist prozedural in \gls{PHP}, \gls{HTML} und teils in \gls{CSS} geschrieben.  
+Da es sich um sehr viele Funktionen handelt, muss bei der eigenen Programmierung darauf geachtet werden, dass Namen für Funktionen nicht doppelt vorkommen. Dies könnte zu Namenskollisionen mit anderen Funktionen führen. Diese Thematik wird tiefer im Unterkapitel \nameref{PRST} behandelt.\newline
+Zum Schluss dieser Einführung wird noch der Begriff \emph{eventorientiert} erklärt und erläutert. Dies ist die Architektur, nach der Plugins in Wordpress arbeiten\footcitetgedr[Vgl.][Seite 9 - 10]{BB11}.\newline
+Kurz gesagt bedeutet dieser Begriff, dass über sogenannte \emph{hooks}, Kontakt zur Wordpress-Schnittstelle aufgebaut werden kann. Dabei wird in einem bestimmten Bereich der Seite entweder eine neue Funktion eingebaut (dann ist es ein \emph{action\_hook}) oder bestimmter Inhalt gefiltert (dann ist es ein \emph{filter\_hook}).\footcitetgedr[Vgl.][Seite 274]{AH12}\newline
+Hooks sind also ein Platz auf einer Seite, an der sich frei übersetzt Quellcode ''aufhängen'' lässt. Die eventorientierte Architektur bietet also die Möglichkeit, erst bei einem Klick auf ein bestimmtes Objekt, einen hook auszulösen. In HTML wäre ein hook die Funktion hinter dem Button ''Button anklicken''\footcitetgedr[Vgl.][Seite 10]{BB11}. Tiefer wird auf die eventorientierte Architektur im Kapitel \ref{benutzerdeffunkt} eingegangen.\newline
+Soviel zu dem Begriff des Plugins. Im \ref{BEWE} geht es nun um die Entwicklungsvorbereitung. Dabei werden verschiedene Umgebungen und Programme vorgestellt. 
+\subsection{Benötigte Werkzeuge}\label{BEWE}
+Hier werden nun die Werkzeuge vorgestellt, welche für die Entwicklung und dem eigentlichen Umgang mit Wordpress benötigt werden. Hierzu wird auf der einen Seite Wordpress, aber natürlich auch eine Umgebung für die Programmierung, zum Testen und Hochladen benötigt.
+\subsubsection{Webserver}
+Der Webserver muss laut offiziellen Vorgaben\footcitetgedr[Vgl.][Seite 11]{BB11} von Wordpress mindestens \gls{PHP} 5.2 und MySQL 4.1.2 \gls{SQL} für die von uns verwendete Wordpressversion 3.2 unterstützen. \newline
+Wir haben dafür eine lokale Installation mittels \gls{XAMPP} verwendet. \gls{XAMPP} kann unter \url{http://www.apachefriends.org/en/xampp.html} heruntergeladen werden.
+\subsubsection{Wordpress}
+Wordpress bietet unter \url{http://wordpress.org/download} die aktuellste Version seines Softwarepakets an. Dieses ist gepackt und muss anschließend nur noch auf den Webserver im \emph{htdocs}-Ordner entpackt werden. Anschließend wird  die \gls{URL} \url{http://localhost/wordpress/} oder \url{http://deine-domain/wordpress/} aufgerufen und die entsprechenden Datenbank-Details eingeben werden.\footcitetgedr[Vgl.][Seite 48]{AH12} \newline
+Da die Pluginprogrammierung hier im Mittelpunkt steht, wird nicht weiter auf dieses Thema eingegangen. Für unser Plugin ist es erforderlich  eine Version über 3.0 zu nehmen, da es ansonsten zu Fehlern kommen kann.
+\subsubsection{Editor}
+Als Editor zum programmieren der einzelnen Funktionen ist kein spezieller erforderlich. Allerdings sollte darauf geachtet werden, dass dieser entsprechende Anforderungen entspricht\footcitetgedr[Vgl.][Seite 12-13]{BB11}:
+\begin{enumerate}
+	\item Syntax-Highlighting
+	\item Anzeige von Zeilennummern
+	\item Anzeige von zusammengehörigen Klammern
+\end{enumerate}
+Bei der Mentoren-Suche wurde für Windows das Programm Notepad++ verwendet, welches sich unter \url{http://notepad-plus-plus.org/download} herunterladen lässt und frei verfügbar ist. \newline
+Für Mac-Systeme kann das Programm \emph{textwrangler} verwendet werden.. Dies ist ein proprietäres Programm, welches kostenlos unter folgenden Link \url{http://www.barebones.com/products/TextWrangler/} heruntergeladen werden kann.
+\subsubsection{FTP Client}
+Um vom lokalen Rechner Dateien auf den Server zu transportieren, wird ein \gls{FTP}-Client benötigt. Dafür kann unter Windows das Programm Filezilla verwendet werden. Es handelt sich hierbei um ein unter der \gls{GPL} lizenzierten Programm. \newline
+Für Mac OS X kann das Programm Cyberduck verwendet werden. Auch hierbei handelt es sich um \gls{GPL}-lizenziertes Programm.\footcitetgedr[Vgl.][Seite 14]{BB11}
+\subsection{Programmierstandards}\label{PRST}
+Standards für Programmierer sind deshalb sehr wichtig, weil damit auch andere Programmierer den logischen Aufbau des Plugins schnell verstehen können - auch wenn diese manchmal nicht mit den eigenen Ideen zufrieden sind. Die Hauptpunkt, um den eigenen Quellcode möglichst gut zu organisieren und strukturieren, werden an dieser Stelle nach Bondari und Griffiths\footcitetgedr[Vgl.][Seite 15 - 18]{BB11} aufgezählt:
+\begin{enumerate}
+	\item {\bf Aufgaben werden in Prozeduren eingeteilt}
+	\begin{itemize}
+	 \item Für jede Aufgabe gibt es genau eine Prozedur, welche aber auch andere Prozeduren aufrufen kann. Eine Regel hierbei ist, dass nicht mehr als drei Variablen der Prozedur übergeben werden sollen. 
+	\end{itemize}
+	\item {\bf Es werden Klassen verwendet}
+	\begin{itemize}
+		\item Je mehr programmiert wird, desto mehr wird in die objektorientierte Programmierung eingestiegen, da mit diesem Programmierparadigma Vererbung, Erweiterungen und Klassen besser programmiert werden können. Eine prozedurale Programmierung mit Klassen ist auch möglich. Wir haben uns aufgrund von nur drei Entwicklern und diesem vergleichbar kleinen Projekt für die prozedurale Programmierung entschieden.
+	\end{itemize}
+	\item {\bf Verwendung von beschreibenden Variablen und Funktionen}
+	\begin{itemize}
+		\item Für \gls{PHP} gibt es keine großen Anforderungen an eine Variable, was den Namen angeht. Allerdings sollte immer darauf geachtet werden, dass Variablen den entsprechenden Kontext, möglichst kurz und auf Englisch wiedergeben sollten. Wenn der Quelltext mit Variablen bestückt ist, die sich nicht von selbst erklären, fällt es sehr schwer die Logik des Programms zu verstehen.	
+	\end{itemize}
+	\item {\bf Verwendung von modularer Programmierung}
+	\begin{itemize}
+	\item	 Indem modulare Programmierung verwendet wird, können einzelne Klassen beispielsweise für andere Projekte verwendet werden, da diese übersichtlich abgespeichert werden.
+	\end{itemize}
+\end{enumerate}
+In dem Projekt der Mentoren-Suche wurde versucht, sich an diese Standards zu halten. Deshalb soll in diesem Tutorial nicht davon abgewichen werden.

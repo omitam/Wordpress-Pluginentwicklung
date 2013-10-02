@@ -1,0 +1,115 @@
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{lmodern}
+\usepackage{paralist} 
+\usepackage[automark]{scrpage2}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage[left]{eurosym}
+
+%################
+%--------------------------------------------------------
+%pdflatex beispiel07.tex
+%bibtex beispiel07
+%pdflatex beispiel07.tex
+%pdflatex beispiel07.tex
+%pdflatex beispiel07.tex
+
+%
+\usepackage{jurabib}
+%
+\jurabibsetup{
+	citefull=first,
+	see,
+	titleformat={colonsep,all},
+}
+\jurabibsetup{
+	authorformat=year,
+	commabeforerest,
+	ibidem=strict,
+	citefull=first,
+	see,
+	titleformat=colonsep,
+}
+\renewcommand*{\jbauthorfont}{\textsc}
+%
+%%Im Literaturverzeichnis werden die Titel Fett geschrieben
+\renewcommand*{\biblnfont}{\scshape\textbf}
+\renewcommand*{\bibfnfont}{\normalfont\textbf}
+%
+%%Nach den Autoren wird die Jahreszahl ausgegeben.
+\renewcommand*{\jbcitationyearformat}[1]{(#1):}
+\renewcommand{\jbcitationyearformat}[1]{#1:}
+\renewcommand{\bibatsep}{,}
+%%########################
+
+\usepackage{multibib}
+\newcites{gedr}{Gedruckte Quellen}
+\newcites{int}{Internetquellen}
+
+
+\usepackage[colorlinks,linkcolor=black,citecolor=black,filecolor=black,pagecolor=black,urlcolor=black,bookmarks=true,bookmarksopen=true,bookmarksopenlevel=3,plainpages=false,pdfpagelabels=true]{hyperref}
+
+\usepackage{breakurl}
+
+\addtokomafont{sectioning}{\rmfamily} %%Ersetzt Serif-Text durch Seriflose, nur Serif in ?berschriften
+%%\***********************
+%%\Kompletter Header für alle Seiten
+\pagestyle{scrheadings}
+%%Ersetzt Serif-Text durch Seriflose, nur Serif in ?berschriften
+\renewcommand*{\headfont}{\normalfont}
+
+%Lienienstärke für Header und Footlinie
+\setheadsepline{1pt}
+\setfootsepline{1pt}
+%%\***********************
+
+
+
+
+
+%%Fuer Definitionen
+\usepackage{amsthm}
+\newtheorem{mydef}{Definition}
+
+%%Weitere Farben
+\usepackage[usenames,dvipsnames]{xcolor}
+
+%%Quellcode verwenden
+\usepackage{listings}
+\lstset{
+   basicstyle=\small,
+   breaklines=true,              
+   keywordstyle=\color{PineGreen},
+   stringstyle=\color{blue},
+   commentstyle=\color{purple},
+   tabsize=2,
+   numbers=left,
+   numberstyle=\tiny,
+   numberblanklines=true,
+   stepnumber=1,
+   numbersep=10pt,
+   xleftmargin=15pt,
+   captionpos=b
+ }
+ \usepackage{listing}
+
+
+\usepackage{setspace}
+%Zeilenabstand 1,5 fach
+\onehalfspacing
+
+%Paket zur Indexerstellung
+\usepackage{makeidx} 
+\makeindex
+
+%Richtige Abstände setzen
+\usepackage[left=3cm,right=2cm,top=1.5cm,bottom=1cm,
+textheight=245mm,textwidth=160mm,includeheadfoot,headsep=1cm,
+footskip=1cm]{geometry} 
+
+
